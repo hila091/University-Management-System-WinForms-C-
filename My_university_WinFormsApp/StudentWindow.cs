@@ -1,0 +1,1776 @@
+﻿
+using My_university_WinFormsApp.Models;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+
+
+
+namespace My_university_WinFormsApp
+{
+    public partial class StudentWindow : Form
+    {
+        private Student user;
+        private bool isMenuOpen;
+        private bool isDay;
+
+        Dictionary<string, Image> dayIcons = new Dictionary<string, Image>();
+        Dictionary<string, Image> nightIcons = new Dictionary<string, Image>();
+
+        public Dictionary<string, Color> yellowPaletteDay = new Dictionary<string, Color>();
+        public Dictionary<string, Color> yellowPaletteNight = new Dictionary<string, Color>();
+        //------------------------------------------------------------------------------------
+        private List<Panel> messagesPanelList = new List<Panel>();// אני רוצה רשימה של כל הפאנלים של ההודעות זה יהיה יותר קל ככה
+        //------------------------------------------------------------------------------------
+        //---------------------------------------- משתנים עבור יצירת העמוד 
+        private Panel topPanel;
+        private Label helloLable;
+        private Panel menuPanel;
+        private Button prsonalInfro;
+        private Button message;
+        private Button search;
+        private Button settings;
+        private Button logOut;
+        private PictureBox menuIcon;
+        private Panel infroPanel;
+        private Panel settingsPanel;
+        private Panel coursesPanel;
+        private PictureBox switchIcon;
+        private Label title;
+        private PictureBox profilePicture;
+        private Button courses;
+        private Panel searchingPanel;
+        private TabControl messageTabControl;
+
+        // --------------------------------------- משתנים נוספים 
+
+        private RichTextBox coreProgramLable;
+        private RichTextBox courseDetails;
+        private RichTextBox specializationLable;
+
+        private RichTextBox userInfro;
+
+        private Label dayLable;
+        private Label nightLable;
+
+
+        private TextBox searshBox;
+        private PictureBox searchIcon;
+
+        private TabPage sendMessages;
+        private TabPage showMessages;
+        private Panel messagePanel;
+        private Button importanceSearch;
+        private Button favoriteSearch;
+        private Label searchLable;
+        private ComboBox dateSearch;
+        private RichTextBox messageContent;
+        private Label sendingDate;
+        private Label senderDetails;
+        private Button replyButton;
+        private Button favorMessages;
+        private Panel writingPanel;
+        private Button sendButton;
+        private TextBox destinationName;
+        private RichTextBox writingMessage;
+        private Button removeMessage;
+
+        //------------------------------------------------------------------------------------
+        public StudentWindow(Student user)
+        {
+
+            InitializeComponent();
+            createStudentWindowPage();
+            this.isDay = true; // כי הברירת מחדל זה שהמצב הוא מצב יום 
+            this.isMenuOpen = false;
+            this.FormClosing += CloseAll;
+            this.user = user;
+
+            // איפוס פלטת אייקונים למצב יום בברירת מחדל
+            dayIcons["infro"] = Image.FromFile(@"..\..\..\..\imgs\infro2.png");
+            dayIcons["menu"] = Image.FromFile(@"..\..\..\..\imgs\menu2.png");
+            dayIcons["lightMood"] = Image.FromFile(@"..\..\..\..\imgs\lightMood2.png");
+            dayIcons["nightMood"] = Image.FromFile(@"..\..\..\..\imgs\nightMood2.png");
+            dayIcons["message"] = Image.FromFile(@"..\..\..\..\imgs\message2.png");
+            dayIcons["search"] = Image.FromFile(@"..\..\..\..\imgs\search2.png");
+            dayIcons["logOut"] = Image.FromFile(@"..\..\..\..\imgs\logOut2.png");
+            dayIcons["settings"] = Image.FromFile(@"..\..\..\..\imgs\settings2.png");
+            dayIcons["on"] = Image.FromFile(@"..\..\..\..\imgs\on2.png");
+
+            // איפוס פלטת אייקונים למצב לילה 
+            nightIcons["infro"] = Image.FromFile(@"..\..\..\..\imgs\infro1.png");
+            nightIcons["menu"] = Image.FromFile(@"..\..\..\..\imgs\menu1.png");
+            nightIcons["lightMood"] = Image.FromFile(@"..\..\..\..\imgs\lightMood1.png");
+            nightIcons["nightMood"] = Image.FromFile(@"..\..\..\..\imgs\nightMood1.png");
+            nightIcons["message"] = Image.FromFile(@"..\..\..\..\imgs\message1.png");
+            nightIcons["search"] = Image.FromFile(@"..\..\..\..\imgs\search1.png");
+            nightIcons["logOut"] = Image.FromFile(@"..\..\..\..\imgs\logOut1.png");
+            nightIcons["settings"] = Image.FromFile(@"..\..\..\..\imgs\settings1.png");
+            nightIcons["off"] = Image.FromFile(@"..\..\..\..\imgs\off1.png");
+
+
+            // פלטת צבעים צהובה מצב יום
+            yellowPaletteDay["baseColor"] = Color.PaleGoldenrod;
+            yellowPaletteDay["buttonColor"] = Color.Moccasin;
+            yellowPaletteDay["otherColor"] = Color.LemonChiffon;
+            yellowPaletteDay["titleColor"] = Color.SaddleBrown;
+            yellowPaletteDay["textColor"] = Color.FromArgb(204, 153, 0);
+            yellowPaletteDay["backGroundColor"] = Color.FromArgb(238, 240, 211);
+
+            // פלטת צבעים צהובה מצב לילה
+            yellowPaletteNight["baseColor"] = Color.FromArgb(139, 144, 81);
+            yellowPaletteNight["buttonColor"] = Color.FromArgb(91, 95, 37);
+            yellowPaletteNight["otherColor"] = Color.FromArgb(167, 172, 89);
+            yellowPaletteNight["titleColor"] = Color.LemonChiffon;
+            yellowPaletteNight["textColor"] = Color.FromArgb(238, 240, 211);
+            yellowPaletteNight["backGroundColor"] = Color.FromArgb(105, 112, 2);
+
+         
+        }
+
+        private void createStudentWindowPage()
+        {
+            topPanel = new Panel();
+            menuIcon = new PictureBox();
+            helloLable = new Label();
+            menuPanel = new Panel();
+            courses = new Button();
+            logOut = new Button();
+            prsonalInfro = new Button();
+            settings = new Button();
+            message = new Button();
+            search = new Button();
+            infroPanel = new Panel();
+            settingsPanel = new Panel();
+            coursesPanel = new Panel();
+            switchIcon = new PictureBox();
+            title = new Label();
+            profilePicture = new PictureBox();
+            messageTabControl = new TabControl();
+            topPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)menuIcon).BeginInit();
+            menuPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)switchIcon).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)profilePicture).BeginInit();
+            SuspendLayout();
+            // 
+            // topPanel
+            // 
+            topPanel.BackColor = Color.PaleGoldenrod;
+            topPanel.Controls.Add(menuIcon);
+            topPanel.Controls.Add(helloLable);
+            topPanel.Location = new Point(0, 0);
+            topPanel.Name = "topPanel";
+            topPanel.Size = new Size(625, 82);
+            topPanel.TabIndex = 0;
+            // 
+            // menuIcon
+            // 
+            menuIcon.Location = new Point(492, 12);
+            menuIcon.Name = "menuIcon";
+            menuIcon.Size = new Size(45, 45);
+            menuIcon.TabIndex = 4;
+            menuIcon.TabStop = false;
+            menuIcon.Click += openORcloseMenu;
+            menuIcon.SizeMode = PictureBoxSizeMode.StretchImage;
+            // 
+            // helloLable
+            // 
+            helloLable.AutoSize = true;
+            helloLable.Font = new Font("Arial", 15F, FontStyle.Bold);
+            helloLable.ForeColor = Color.SaddleBrown;
+            helloLable.Location = new Point(260, 28);
+            helloLable.Name = "helloLable";
+            helloLable.RightToLeft = RightToLeft.Yes;
+            helloLable.Size = new Size(118, 30);
+            helloLable.TabIndex = 2;
+            helloLable.Text = "ברוך הבא ";
+            helloLable.TextAlign = ContentAlignment.MiddleRight;
+            // 
+            // menuPanel
+            // 
+            menuPanel.BackColor = Color.PaleGoldenrod;
+            menuPanel.Controls.Add(courses);
+            menuPanel.Controls.Add(logOut);
+            menuPanel.Controls.Add(prsonalInfro);
+            menuPanel.Controls.Add(settings);
+            menuPanel.Controls.Add(message);
+            menuPanel.Controls.Add(search);
+            menuPanel.Location = new Point(625, 169);
+            menuPanel.Name = "menuPanel";
+            menuPanel.Size = new Size(210, 550);
+            menuPanel.TabIndex = 3;
+            // 
+            // courses
+            // 
+            courses.Font = new Font("Arial", 10F, FontStyle.Bold);
+            courses.ForeColor = Color.SaddleBrown;
+            courses.ImageAlign = ContentAlignment.MiddleRight;
+            courses.Location = new Point(0, 260);
+            courses.Name = "courses";
+            courses.Size = new Size(210, 53);
+            courses.TabIndex = 5;
+            courses.Text = " הצג קורסים";
+            courses.TextImageRelation = TextImageRelation.TextBeforeImage;
+            courses.UseVisualStyleBackColor = true;
+            courses.Click += courses_Click;
+            // 
+            // logOut
+            // 
+            logOut.Font = new Font("Arial", 10F, FontStyle.Bold);
+            logOut.ForeColor = Color.SaddleBrown;
+            logOut.ImageAlign = ContentAlignment.MiddleRight;
+            logOut.Location = new Point(0, 472);
+            logOut.Name = "logOut";
+            logOut.Size = new Size(210, 53);
+            logOut.TabIndex = 4;
+            logOut.Text = " יציאה";
+            logOut.TextImageRelation = TextImageRelation.TextBeforeImage;
+            logOut.UseVisualStyleBackColor = true;
+            logOut.Click += logOut_Click;
+            // 
+            // prsonalInfro
+            // 
+            prsonalInfro.Font = new Font("Arial", 10F, FontStyle.Bold);
+            prsonalInfro.ForeColor = Color.SaddleBrown;
+            prsonalInfro.ImageAlign = ContentAlignment.MiddleRight;
+            prsonalInfro.Location = new Point(0, 24);
+            prsonalInfro.Name = "prsonalInfro";
+            prsonalInfro.Size = new Size(210, 53);
+            prsonalInfro.TabIndex = 4;
+            prsonalInfro.Text = " מידע אישי";
+            prsonalInfro.TextImageRelation = TextImageRelation.TextBeforeImage;
+            prsonalInfro.UseVisualStyleBackColor = true;
+            prsonalInfro.Click += prsonalInfro_Click;
+            // 
+            // settings
+            // 
+            settings.Font = new Font("Arial", 10F, FontStyle.Bold);
+            settings.ForeColor = Color.SaddleBrown;
+            settings.ImageAlign = ContentAlignment.MiddleRight;
+            settings.Location = new Point(0, 201);
+            settings.Name = "settings";
+            settings.Size = new Size(210, 53);
+            settings.TabIndex = 4;
+            settings.Text = " הגדרות";
+            settings.TextImageRelation = TextImageRelation.TextBeforeImage;
+            settings.UseVisualStyleBackColor = true;
+            settings.Click += settings_Click;
+            // 
+            // message
+            // 
+            message.Font = new Font("Arial", 10F, FontStyle.Bold);
+            message.ForeColor = Color.SaddleBrown;
+            message.ImageAlign = ContentAlignment.MiddleRight;
+            message.Location = new Point(0, 83);
+            message.Name = "message";
+            message.Size = new Size(210, 53);
+            message.TabIndex = 4;
+            message.Text = " הודעות";
+            message.TextImageRelation = TextImageRelation.TextBeforeImage;
+            message.UseVisualStyleBackColor = true;
+            message.Click += message_Click;
+            // 
+            // search
+            // 
+            search.Font = new Font("Arial", 10F, FontStyle.Bold);
+            search.ForeColor = Color.SaddleBrown;
+            search.ImageAlign = ContentAlignment.MiddleRight;
+            search.Location = new Point(0, 142);
+            search.Name = "search";
+            search.Size = new Size(210, 53);
+            search.TabIndex = 4;
+            search.Text = " חיפוש";
+            search.TextImageRelation = TextImageRelation.TextBeforeImage;
+            search.UseVisualStyleBackColor = true;
+            search.Click += search_Click;
+            //
+            //
+            //
+            searchingPanel = new Panel();
+            searchingPanel.AutoScroll = true;
+            searchingPanel.BackColor = Color.LemonChiffon;
+            searchingPanel.Location = new Point(46, 138);
+            searchingPanel.Name = "searchingPanel";
+            searchingPanel.Size = new Size(533, 569);
+            searchingPanel.TabIndex = 4;
+            // 
+            // infroPanel
+            // 
+            infroPanel.Location = new Point(0, 0);
+            infroPanel.Name = "infroPanel";
+            infroPanel.Size = new Size(200, 100);
+            infroPanel.TabIndex = 0;
+            // 
+            // settingsPanel
+            // 
+            settingsPanel.Location = new Point(0, 0);
+            settingsPanel.Name = "settingsPanel";
+            settingsPanel.Size = new Size(200, 100);
+            settingsPanel.TabIndex = 0;
+            // 
+            // coursesPanel
+            // 
+            coursesPanel.Location = new Point(0, 0);
+            coursesPanel.Name = "coursesPanel";
+            coursesPanel.Size = new Size(200, 100);
+            coursesPanel.TabIndex = 0;
+            // 
+            // switchIcon
+            // 
+            switchIcon.Location = new Point(0, 0);
+            switchIcon.Name = "switchIcon";
+            switchIcon.Size = new Size(100, 50);
+            switchIcon.TabIndex = 0;
+            switchIcon.TabStop = false;
+            switchIcon.Click += ChangeMood;
+            // 
+            // title
+            // 
+            title.AutoSize = true;
+            title.Font = new Font("Arial", 15F, FontStyle.Bold);
+            title.ForeColor = Color.SaddleBrown;
+            title.Location = new Point(270, 96);
+            title.Name = "title";
+            title.Size = new Size(57, 30);
+            title.TabIndex = 4;
+            title.Text = "title";
+            // 
+            // profilePicture
+            // 
+            profilePicture.Location = new Point(660, 12);
+            profilePicture.Name = "profilePicture";
+            profilePicture.Size = new Size(144, 139);
+            profilePicture.SizeMode = PictureBoxSizeMode.Zoom;
+            profilePicture.TabIndex = 5;
+            profilePicture.TabStop = false;
+            // 
+            // StudentWindow
+            // 
+            Controls.Add(profilePicture);
+            Controls.Add(title);
+            Controls.Add(menuPanel);
+            Controls.Add(topPanel);
+
+
+            topPanel.ResumeLayout(false);
+            topPanel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)menuIcon).EndInit();
+            menuPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)switchIcon).EndInit();
+            ((System.ComponentModel.ISupportInitialize)profilePicture).EndInit();
+
+        }
+
+        private void Student_Load(object sender, EventArgs e)
+        {
+            
+            this.BackColor = yellowPaletteDay["backGroundColor"];
+           
+            profilePicture.Image = this.user.ProfileImage;
+
+            helloLable.Text = "ברוך הבא " + this.user.Name + " " + this.user.FmName;
+            menuIcon.Image = this.dayIcons["menu"];
+
+
+            prsonalInfro.Image = this.dayIcons["infro"];
+            prsonalInfro.BackColor = yellowPaletteDay["buttonColor"];
+
+            message.Image = this.dayIcons["message"];
+            message.BackColor = yellowPaletteDay["buttonColor"];
+
+            search.Image = this.dayIcons["search"];
+            search.BackColor = yellowPaletteDay["buttonColor"];
+
+            settings.Image = this.dayIcons["settings"];
+            settings.BackColor = yellowPaletteDay["buttonColor"];
+
+            logOut.Image = this.dayIcons["logOut"];
+            logOut.BackColor = yellowPaletteDay["buttonColor"];
+
+            courses.Image = this.dayIcons["logOut"];
+            courses.BackColor = yellowPaletteDay["buttonColor"];
+
+            // יצירת כל העמודים 
+
+            createAllCoursesPage();
+            createPresonalInfroPage();
+            crearteSettingsPage();
+            createSearchPage();
+            createMessagePage();
+
+            removeAll();
+            title.Text = "כל הקורסים";
+            Controls.Add(coursesPanel);
+
+
+        }
+
+      
+        private void openORcloseMenu(object sender, EventArgs e)
+        {
+            if (this.isMenuOpen)
+            {
+                ClientSize = new Size(625, 719);
+                this.isMenuOpen = false;
+            }
+
+            else
+            {
+                this.isMenuOpen = true;
+                ClientSize = new Size(834, 719);
+            }
+        }
+
+        // ------------------------------------------------------- פעולות ליצירת עמודים 
+        private void createAllCoursesPage()
+        {
+
+            coursesPanel.AutoScroll = true;
+            coursesPanel.BackColor = yellowPaletteDay["otherColor"];
+            coursesPanel.Location = new Point(46, 138);
+            coursesPanel.Name = "coursesPanel";
+            coursesPanel.Size = new Size(533, 569);
+            coursesPanel.TabIndex = 4;
+
+            Lecturer saveTeacher;
+            int baseY = 20;
+
+            coreProgramLable = new RichTextBox();
+            coreProgramLable.Location = new Point(20, baseY);
+            coreProgramLable.Name = "coreProgramLable";
+            coreProgramLable.Font = new Font("Arial", 13F, FontStyle.Bold);
+            coreProgramLable.ForeColor = yellowPaletteDay["titleColor"];
+            coreProgramLable.BackColor = yellowPaletteDay["backGroundColor"];
+            coreProgramLable.RightToLeft = RightToLeft.Yes;
+            coreProgramLable.Text = "קורסי חובה - " + this.user.CoreCourse.Name;
+            coreProgramLable.ReadOnly = true;
+            coreProgramLable.ScrollBars = RichTextBoxScrollBars.None;
+            coreProgramLable.Size = new Size(470, 40);
+
+            coursesPanel.Controls.Add(coreProgramLable);
+
+            baseY += 50;
+            for (int i = 0; i < this.user.CoreCourse.Courses.Count; i++) // קורסי ליבה 
+            {
+                courseDetails = new RichTextBox();
+                courseDetails.Location = new Point(21, baseY);
+                courseDetails.Size = new Size(470, 40);
+                courseDetails.Font = new Font("Arial", 10F, FontStyle.Bold);
+                courseDetails.ForeColor = yellowPaletteDay["titleColor"];
+                courseDetails.BackColor = yellowPaletteDay["baseColor"];
+                courseDetails.BorderStyle = BorderStyle.None;
+                courseDetails.ReadOnly = true;
+                courseDetails.RightToLeft = RightToLeft.Yes;
+                courseDetails.Name = "course" + i;
+
+                saveTeacher = this.user.CoreCourse.Courses[i].Teacher;
+                if (saveTeacher != null)
+                    courseDetails.Text = this.user.CoreCourse.Courses[i].Name + "-" + saveTeacher.Name + " " + saveTeacher.FmName;
+                else
+                    courseDetails.Text = this.user.CoreCourse.Courses[i].Name + " טרם נקבע מרצה - ";
+
+                coursesPanel.Controls.Add(courseDetails);
+
+                baseY += 60;
+            }
+
+            specializationLable = new RichTextBox();
+            specializationLable.Location = new Point(20, baseY);
+            specializationLable.Name = "specializationLable";
+            specializationLable.Font = new Font("Arial", 13F, FontStyle.Bold);
+            specializationLable.ForeColor = yellowPaletteDay["titleColor"];
+            specializationLable.BackColor = yellowPaletteDay["backGroundColor"];
+            specializationLable.RightToLeft = RightToLeft.Yes;
+            specializationLable.Text = "קורסי התמחות - " + this.user.SpecializationCourses.Name;
+            specializationLable.ReadOnly = true;
+            specializationLable.ScrollBars = RichTextBoxScrollBars.None;
+            specializationLable.Size = new Size(470, 40);
+            coursesPanel.Controls.Add(specializationLable);
+
+            baseY += 50;
+
+            for (int i = 0; i < this.user.SpecializationCourses.Courses.Count; i++) // קורסי התמחות 
+            {
+
+                courseDetails = new RichTextBox();
+                courseDetails.Location = new Point(20, baseY);
+                courseDetails.Size = new Size(470, 40);
+                courseDetails.Font = new Font("Arial", 10F, FontStyle.Bold);
+                courseDetails.ForeColor = yellowPaletteDay["titleColor"];
+                courseDetails.BackColor = yellowPaletteDay["baseColor"];
+                courseDetails.BorderStyle = BorderStyle.None;
+                courseDetails.ReadOnly = true;
+                courseDetails.RightToLeft = RightToLeft.Yes;
+                courseDetails.Name = "course" + i;
+
+
+                saveTeacher = this.user.SpecializationCourses.Courses[i].Teacher;
+                if (saveTeacher != null)
+                    courseDetails.Text = this.user.CoreCourse.Courses[i].Name + "-" + saveTeacher.Name + " " + saveTeacher.FmName;
+                else
+                    courseDetails.Text = this.user.SpecializationCourses.Courses[i].Name + " טרם נקבע מרצה  ";
+
+
+                coursesPanel.Controls.Add(courseDetails);
+
+                baseY += 60;
+            }
+
+
+        }
+
+        private void createPresonalInfroPage()
+        {
+
+            infroPanel.AutoScroll = true;
+            infroPanel.BackColor = yellowPaletteDay["otherColor"];
+            infroPanel.Location = new Point(46, 138);
+            infroPanel.Name = "infroPanel";
+            infroPanel.Size = new Size(533, 569);
+            infroPanel.TabIndex = 4;
+            // 
+            // userInfro
+            // 
+            userInfro = new RichTextBox();
+            userInfro.Location = new Point(237, 26);
+            userInfro.Name = "userInfro";
+            userInfro.Size = new Size(270, 377);
+            userInfro.TabIndex = 6;
+            userInfro.Text = "";
+            userInfro.Font = new Font("Arial", 10F, FontStyle.Bold);
+            userInfro.ForeColor = yellowPaletteDay["textColor"];
+            userInfro.BackColor = yellowPaletteDay["baseColor"];
+            userInfro.RightToLeft = RightToLeft.Yes;
+            userInfro.Text = this.user.Name + " " + this.user.FmName + Environment.NewLine
+                              + "גיל :" + this.user.Age + Environment.NewLine
+                              + "מספר טלפון: " + this.user.PhoneNum + Environment.NewLine
+                              + "אימייל: " + this.user.Gmail + Environment.NewLine
+                              + "מספר סטודנט :" + this.user.StudentNumber + Environment.NewLine
+                              + "תז: " + this.user.Id + Environment.NewLine
+                              + "מסלול : " + this.user.CoreCourse.Name + Environment.NewLine
+                              + "התמחות: " + this.user.SpecializationCourses.Name;
+
+            profilePicture = new PictureBox();
+            profilePicture.Location = new Point(15, 12);
+            profilePicture.Name = "profilePicture";
+            profilePicture.SizeMode = PictureBoxSizeMode.Zoom;
+            profilePicture.Size = new Size(160, 160);
+            profilePicture.TabIndex = 5;
+            profilePicture.TabStop = false;
+            profilePicture.Image = this.user.ProfileImage;
+
+            infroPanel.Controls.Add(profilePicture);
+            infroPanel.Controls.Add(userInfro);
+
+        }
+
+        private void crearteSettingsPage()
+        {              
+            settingsPanel.AutoScroll = true;
+            settingsPanel.BackColor = yellowPaletteDay["otherColor"];
+            settingsPanel.Location = new Point(46, 138);
+            settingsPanel.Name = "settingsPanel";
+            settingsPanel.Size = new Size(533, 569);
+            settingsPanel.TabIndex = 4;
+            // 
+            // dayLable
+            // 
+            dayLable = new Label();
+            dayLable.AutoSize = true;
+            dayLable.Location = new Point(360, 55);
+            dayLable.Name = "dayLable";
+            dayLable.Size = new Size(50, 20);
+            dayLable.TabIndex = 0;
+            dayLable.Text = "Day Mood";
+            dayLable.ForeColor = yellowPaletteDay["titleColor"];
+            dayLable.Font = new Font("Arial", 15F, FontStyle.Bold);
+            // 
+            // nightLable
+            // 
+            nightLable = new Label();
+            nightLable.AutoSize = true;
+            nightLable.Location = new Point(45, 55);
+            nightLable.Name = "nightLable";
+            nightLable.Size = new Size(50, 20);
+            nightLable.TabIndex = 1;
+            nightLable.Text = "Night Mood";
+            nightLable.ForeColor = yellowPaletteDay["titleColor"];
+            nightLable.Font = new Font("Arial", 15F, FontStyle.Bold);
+            // 
+            // switchIcon
+            // 
+            switchIcon.Location = new Point(235, 45);
+            switchIcon.Name = "switchIcon";
+            switchIcon.Size = new Size(60, 60);
+            switchIcon.TabIndex = 2;
+            switchIcon.TabStop = false;
+            switchIcon.SizeMode = PictureBoxSizeMode.StretchImage;
+            switchIcon.Image = dayIcons["on"];
+         
+            switchIcon.Click += ChangeFlag;
+            switchIcon.Click += ChangeMood;
+
+
+
+            // ------------------------------
+            settingsPanel.Controls.Add(switchIcon);
+            settingsPanel.Controls.Add(nightLable);
+            settingsPanel.Controls.Add(dayLable);
+        }
+
+        private void createMessagePage()
+        {
+            // 
+            // dateSearch - תיבת חלוקה חיפוש לפי תאריך
+            // 
+            dateSearch = new ComboBox();
+            dateSearch.DropDownStyle = ComboBoxStyle.DropDownList;
+            dateSearch.FormattingEnabled = true;
+            dateSearch.Items.AddRange(new object[] { "התאריך המוקדם ביותר", "התאריך המאוחר ביותר" });
+            dateSearch.Location = new Point(244, 32);
+            dateSearch.Name = "dateSearch";
+            dateSearch.Size = new Size(170, 28);
+            dateSearch.TabIndex = 9;
+            dateSearch.SelectedIndexChanged += OrderByEarliestDateOrOldestDate;
+
+            // 
+            // importanceSearch - חיפוש לפי חשיבות
+            // 
+            importanceSearch = new Button();
+            importanceSearch.Font = new Font("Arial", 10F, FontStyle.Bold);
+            importanceSearch.ForeColor = Color.SaddleBrown;
+            importanceSearch.Location = new Point(113, 26);
+            importanceSearch.Name = "importanceSearch";
+            importanceSearch.Size = new Size(125, 38);
+            importanceSearch.TabIndex = 7;
+            importanceSearch.Text = "⚠חשיבות שולח";
+            importanceSearch.UseVisualStyleBackColor = true;
+            importanceSearch.Click += OrderByImportance;
+
+            // 
+            // favoriteSearch - חיפוש לפי הודעות מועדפות
+            // 
+            favoriteSearch = new Button();
+            favoriteSearch.Font = new Font("Arial", 20F, FontStyle.Bold);
+            favoriteSearch.ForeColor = Color.SaddleBrown;
+            favoriteSearch.Location = new Point(64, 17);
+            favoriteSearch.Name = "favoriteSearch";
+            favoriteSearch.Size = new Size(43, 51);
+            favoriteSearch.TabIndex = 2;
+            favoriteSearch.Text = "♡";
+            favoriteSearch.UseVisualStyleBackColor = true;
+            favoriteSearch.Click += OrderByFavor;
+            // 
+            // searchLable - תווית 
+            //  
+            searchLable = new Label();
+            searchLable.AutoSize = true;
+            searchLable.Font = new Font("Arial", 11F, FontStyle.Bold);
+            searchLable.ForeColor = Color.SaddleBrown;
+            searchLable.Location = new Point(420, 26);
+            searchLable.Name = "searchLable";
+            searchLable.Size = new Size(99, 26);
+            searchLable.TabIndex = 1;
+            searchLable.Text = "חיפוש לפי";
+
+            showMessages = new TabPage();
+            showMessages.BackColor = Color.LemonChiffon;
+            showMessages.Location = new Point(4, 29);
+            showMessages.Name = "showMessages";
+            showMessages.Padding = new Padding(3);
+            showMessages.Size = new Size(525, 536);
+            showMessages.TabIndex = 1;
+            showMessages.Text = "ההודעות שלי";
+            showMessages.AutoScroll = true;
+            // הוספה של כל שאר הרכיבים 
+            showMessages.Controls.Add(dateSearch);
+            showMessages.Controls.Add(importanceSearch);
+            showMessages.Controls.Add(favoriteSearch);
+            showMessages.Controls.Add(searchLable);
+
+
+            // ------------------------------------- התחלת הצגת ההודעות
+
+            if ( this.user.Messages.Count > 0) {
+                MessageBox.Show(" יש לך "+ this.user.Messages.Count+" הודעות חדשות ");
+                // 
+                // showMessages
+                // 
+                int baseY = 70;
+                for (int i = 0; i < this.user.Messages.Count; i++)
+                {   // 
+                    // meaaagePanel - הפאנל שמכיל את כל היופי הזה
+                    // 
+                    Panel messagePanel = new Panel();
+                    messagePanel.BackColor = Color.PaleGoldenrod;
+                    messagePanel.Location = new Point(19, baseY + i*238);
+                    messagePanel.Name = "messagePanel" + i;
+                    messagePanel.Size = new Size(475, 228);
+                    messagePanel.TabIndex = 0;
+                    // 
+                    // replyButton - כפתור שליחת הודעה בחזרה
+                    // 
+                    Button replyButton = new Button();
+                    replyButton.Font = new Font("Arial", 10F, FontStyle.Bold);
+                    replyButton.ForeColor = Color.SaddleBrown;
+                    replyButton.Location = new Point(308, 162);
+                    replyButton.Name = "replyMessage" + i; // שמירת ההודעה
+                    replyButton.Size = new Size(87, 32);
+                    replyButton.TabIndex = 13;
+                    replyButton.Text = "השב";
+                    replyButton.UseVisualStyleBackColor = true;
+                    replyButton.Click += ReplyMessage;
+                    // 
+                    // favorMessages - כפתור לשינוי הודעה מועדפת
+                    // 
+                    Button favorMessages = new Button();
+                    favorMessages.Font = new Font("Arial", 18F, FontStyle.Bold);
+                    favorMessages.ForeColor = Color.SaddleBrown;
+                    favorMessages.Location = new Point(410, 155);
+                    favorMessages.Name = "favorMessages"+i;
+                    favorMessages.Size = new Size(41, 43);
+                    favorMessages.TabIndex = 12;
+                    if (this.user.Messages[i].Favor)
+                        favorMessages.Text = "❤";
+                    else
+                        favorMessages.Text = "♡";
+                    favorMessages.UseVisualStyleBackColor = true;
+                    favorMessages.Click += MakeItFavor;
+                    // 
+                    // favorMessages - כפתור לשינוי הודעה מועדפת
+                    // 
+                    Button removeMessage = new Button();
+                    removeMessage.Font = new Font("Arial", 14F, FontStyle.Bold);
+                    removeMessage.ForeColor = Color.SaddleBrown;
+                    removeMessage.Location = new Point(250, 155);
+                    removeMessage.Name = "removeMessage" + i;
+                    removeMessage.Size = new Size(41, 43);
+                    removeMessage.TabIndex = 12;                  
+                    removeMessage.Text = "✖";
+                    removeMessage.Click += RemoveMessage;
+                    // 
+                    // sendingDate - תווית תאריך
+                    // 
+                    Label sendingDate = new Label();
+                    sendingDate.AutoSize = true;
+                    sendingDate.Font = new Font("Arial", 10F, FontStyle.Bold);
+                    sendingDate.ForeColor = Color.SaddleBrown;
+                    sendingDate.Location = new Point(20, 162);
+                    sendingDate.Name = "sendingDate"+i;
+                    sendingDate.Size = new Size(107, 19);
+                    sendingDate.TabIndex = 11;
+                    sendingDate.Text = this.user.Messages[i].SendDate.ToString(); 
+                    // 
+                    // messageContent - תוכן ההודעה
+                    // 
+                    RichTextBox messageContent = new RichTextBox();
+                    messageContent.ScrollBars = RichTextBoxScrollBars.Both;
+                    messageContent.Location = new Point(20, 46);
+                    messageContent.Name = "messageContent"+i;
+                    messageContent.Size = new Size(431, 103);
+                    messageContent.TabIndex = 13;
+                    messageContent.Font = new Font("Arial", 8F, FontStyle.Bold);
+                    messageContent.ForeColor = yellowPaletteDay["textColor"];
+                    messageContent.RightToLeft = RightToLeft.Yes;
+                    messageContent.Text = this.user.Messages[i].myMessage;
+                    messageContent.ReadOnly = true;
+                    // 
+                    // senderDetails - פרטי השולח
+                    // 
+                    Label senderDetails = new Label();
+                    senderDetails.AutoSize = true;
+                    senderDetails.Font = new Font("Arial", 10F, FontStyle.Bold);
+                    senderDetails.ForeColor = Color.SaddleBrown;
+                    senderDetails.Location = new Point(335, 11);
+                    senderDetails.Name = "senderDetails"+i; 
+                    senderDetails.Size = new Size(116, 19);
+                    senderDetails.TabIndex = 10;
+                    senderDetails.RightToLeft = RightToLeft.Yes;
+                    senderDetails.Text = this.user.Messages[i].SenderInfro[1]+" "+this.user.Messages[i].SenderInfro[2]+" "+this.user.Messages[i].SenderInfro[3];
+                   
+                    //------------- הוספה --------------- 
+                    messagePanel.Controls.Add(replyButton);
+                    messagePanel.Controls.Add(favorMessages);
+                    messagePanel.Controls.Add(sendingDate);
+                    messagePanel.Controls.Add(messageContent);
+                    messagePanel.Controls.Add(senderDetails); 
+                    messagePanel.Controls.Add(removeMessage);
+
+                    showMessages.Controls.Add(messagePanel); // כל פאנל שמכיל הודעה מתווסף לפאנל הכללי 
+                    messagesPanelList.Add(messagePanel);// הוספה לרשימה של הפאנלים חשוב !!!!!!!!!
+
+                }
+                messageTabControl.Controls.Add(showMessages);
+
+            }
+            else
+            {
+               // כי אם המשתמש לא קיבל הודעות אין סיבה שהפתורים או האפשרויות האלה יהיו נישות לו
+                dateSearch.Enabled = false;
+                importanceSearch.Enabled = false;
+                favoriteSearch.Enabled = false;
+                searchLable.Enabled = false;
+            }
+            // 
+            // sendButton - שייך לשליחת הודעות 
+            // 
+            sendButton = new Button();
+            sendButton.Font = new Font("Arial", 11F, FontStyle.Bold);
+            sendButton.ForeColor = Color.SaddleBrown;
+            sendButton.Location = new Point(46, 404);
+            sendButton.Name = "sendButton";
+            sendButton.Size = new Size(95, 33);
+            sendButton.TabIndex = 2;
+            sendButton.Text = "שלח";
+            sendButton.UseVisualStyleBackColor = true;
+            sendButton.Click += SendButn;
+
+            // 
+            // messageDestination - שייך לשליחת הודעות
+            // 
+            destinationName = new TextBox();
+            destinationName.Location = new Point(204, 32);
+            destinationName.Name = "destinationName";
+            destinationName.Size = new Size(272, 36);
+            destinationName.TabIndex = 1;
+            destinationName.Font = new Font("Arial", 10F, FontStyle.Bold);
+            destinationName.ForeColor = Color.SaddleBrown;
+            destinationName.PlaceholderText = "הזן את שם מלא";
+            destinationName.BackColor = yellowPaletteDay["baseColor"];
+            destinationName.RightToLeft = RightToLeft.Yes;
+            destinationName.Leave += TextBoxCheck;
+            // 
+            // writingMessage - שייך לשליחת הודעות
+            // 
+            writingMessage = new RichTextBox();
+            writingMessage.Location = new Point(46, 74);
+            writingMessage.Name = "writingMessage";
+            writingMessage.Size = new Size(430, 300);
+            writingMessage.TabIndex = 0;
+            writingMessage.BackColor = yellowPaletteDay["baseColor"];
+            writingMessage.Font = new Font("Arial", 12F, FontStyle.Bold);
+            writingMessage.ForeColor = Color.SaddleBrown;
+            writingMessage.RightToLeft = RightToLeft.Yes;
+            writingMessage.Leave += TextBoxCheck;
+            // 
+            // sendMessages
+            // 
+            sendMessages = new TabPage();
+
+            sendMessages.BackColor = Color.LemonChiffon;
+            sendMessages.Controls.Add(sendButton);
+            sendMessages.Controls.Add(destinationName);
+            sendMessages.Controls.Add(writingMessage);
+            sendMessages.Font = new Font("Arial", 15F, FontStyle.Bold);
+            sendMessages.Location = new Point(4, 29);
+            sendMessages.Name = "sendMessages";
+            sendMessages.Padding = new Padding(3);
+            sendMessages.Size = new Size(525, 536);
+            sendMessages.TabIndex = 0;
+            sendMessages.Text = "שלח הודעה";
+            // 
+            // messageTabControl
+            // 
+            messageTabControl.Controls.Add(sendMessages);
+            messageTabControl.Location = new Point(46, 138);
+            messageTabControl.Name = "messageTabControl";
+            messageTabControl.SelectedIndex = 0;
+            messageTabControl.Size = new Size(533, 569);
+            messageTabControl.TabIndex = 6;
+
+
+            
+        }
+
+        //------------------------------------------------- createMessagePage פעולות עזר עבור הפונקציה
+
+        private void OrderByEarliestDateOrOldestDate(object sender, EventArgs e)
+        {
+            favoriteSearch.BackColor = Color.White;
+            favoriteSearch.Text = "♡";
+            importanceSearch.BackColor = Color.White;
+            //----------------------------------------------------------------
+            List<int> messagesOrder = new List<int>();
+
+            for (int i = 0; i < messagesPanelList.Count; i++)
+                messagesOrder.Add(i);
+
+            // ------------------------------------------------------------------- EarliestDate
+            if (dateSearch.SelectedIndex != -1) {                 
+                
+                if (dateSearch.SelectedIndex == 0) {  
+                    for (int i = 0; i < messagesPanelList.Count; i++)
+                        showMessages.Controls.Remove(showMessages.Controls["messagePanel" + i]);
+
+            
+
+                    int temp;
+                    for (int i = 0; i < messagesPanelList.Count-1; i++)
+                        for (int j = 0; j < messagesPanelList.Count-1 -i; j++)
+                            if (this.user.Messages[j].SendDate > this.user.Messages[j+1].SendDate)
+                            {
+                            temp = messagesOrder[j];
+                            messagesOrder[j] = messagesOrder[j + 1];
+                            messagesOrder[j + 1] = temp;
+                            }
+
+                    int baseY = 70;
+                    for (int i = 0; i < messagesOrder.Count; i++)
+                    {
+                        Control msgPanel = messagesPanelList[messagesOrder[i]];
+                        msgPanel.Location = new Point(19, baseY + i * 238);
+                        msgPanel.Name = "messagePanel" + messagesOrder[i];
+                        showMessages.Controls.Add(msgPanel);
+                    }
+
+                }
+                // ------------------------------------------------------------------- OldestDate
+                else
+                if (dateSearch.SelectedIndex == 1)
+                {
+                    for (int i = 0; i < messagesPanelList.Count; i++)
+                        showMessages.Controls.Remove(showMessages.Controls["messagePanel" + i]);
+
+
+                    int temp;
+                    for (int i = 0; i < messagesPanelList.Count - 1; i++)
+                        for (int j = 0; j < messagesPanelList.Count - 1 - i; j++)
+                            if (this.user.Messages[j].SendDate < this.user.Messages[j + 1].SendDate)
+                            {
+                                temp = messagesOrder[j];
+                                messagesOrder[j] = messagesOrder[j + 1];
+                                messagesOrder[j + 1] = temp;
+                            }
+
+
+                    int baseY = 70;
+                    for (int i = 0; i < messagesOrder.Count; i++)
+                    {
+                        Control msgPanel = messagesPanelList[messagesOrder[i]];
+                        msgPanel.Location = new Point(19, baseY + i * 238);
+                        msgPanel.Name = "messagePanel" + messagesOrder[i];
+                        showMessages.Controls.Add(msgPanel);
+                    }
+
+                }
+            }
+        }
+        private void OrderByFavor(object sender, EventArgs e)
+        {
+            dateSearch.SelectedIndex = -1;
+            favoriteSearch.BackColor= Color.FromArgb(255, 204, 204);
+            favoriteSearch.Text = "❤";
+            importanceSearch.BackColor = Color.White;
+
+            //----------------------------------------------------
+            for (int i = 0; i < messagesPanelList.Count; i++)
+                showMessages.Controls.Remove(showMessages.Controls["messagePanel" + i]);
+
+            /* עבור כל פאנל שמכיל פרטים ופעולות על הודעה מסוימת יש מספר
+             * אז כאן אני לוקחת את כל הפאנלים כמספרים מ0 עד כמות ההודעות
+             * ואז אני ממיינת לפי הרשימה שהכנתי כתכונה שמכילה את כל הפאנלים עצמם
+             * פאנלים שמכילים הודעה שנשמרה באהובים רופצת לתחילת הרשימה והאחרים נדחפים מאחור
+             * ואזזזז אני עוברת ומשנה את המיקום שלהם 
+             */
+            List<int> messagesOrder = new List<int>();
+
+            for (int i = 0; i < messagesPanelList.Count; i++)
+                messagesOrder.Add(i);
+
+
+            int temp;
+                for (int i = 0; i < messagesPanelList.Count; i++)
+                    if (this.user.Messages[i].Favor)
+                    {
+                        temp = i;
+                        messagesOrder.Remove(temp);
+                        messagesOrder.Insert(0, temp); 
+             
+                    }
+            /* נניח שיש לי 60 הודעות, 15 מתוכן באהובים ואז ה15 ההן נמצאות בתחילת הרשימה
+             * ואז פשוט עוברים על הרשימה מההתחלה עד הסוף ומציגים את זה
+             */
+            int baseY = 70;
+            for (int i = 0; i < messagesOrder.Count; i++)
+            {
+                Control msgPanel = messagesPanelList[messagesOrder[i]];
+                msgPanel.Location = new Point(19, baseY + i * 238);
+                msgPanel.Name = "messagePanel" + messagesOrder[i];
+                showMessages.Controls.Add(msgPanel);
+            }
+
+        }
+        private void OrderByImportance(object sender, EventArgs e)
+        {
+            dateSearch.SelectedIndex = -1;
+            favoriteSearch.BackColor = Color.White;
+            favoriteSearch.Text = "♡";
+
+            importanceSearch.BackColor = Color.FromArgb(255, 179, 71);
+            //-------------------------------------------------------------------------
+            List<int> messagesOrder = new List<int>();
+
+            for (int i = 0; i < messagesPanelList.Count; i++)
+                messagesOrder.Add(i);
+            //--------------------------------------------------------------------------
+            int temp;
+            for (int i = 0; i < messagesPanelList.Count; i++)
+                if (this.user.Messages[i].SenderInfro[1] == "Student")
+                {
+                    temp = i;
+                    messagesOrder.Remove(temp);
+                    messagesOrder.Insert(0, temp);
+
+                }
+
+            for (int i = 0; i < messagesPanelList.Count; i++)
+                if (this.user.Messages[i].SenderInfro[1] == "StudentTA")
+                {
+                    temp = i;
+                    messagesOrder.Remove(temp);
+                    messagesOrder.Insert(0, temp);
+
+                }
+
+            for (int i = 0; i < messagesPanelList.Count; i++)
+                if (this.user.Messages[i].SenderInfro[1] == "Lecturer")
+                {
+                    temp = i;
+                    messagesOrder.Remove(temp);
+                    messagesOrder.Insert(0, temp);
+
+                }
+
+            for(int i=0; i < messagesPanelList.Count; i++)
+                if (this.user.Messages[i].SenderInfro[1] == "HeadOfDepartment")
+                {
+                    temp = i;
+                    messagesOrder.Remove(temp);
+                    messagesOrder.Insert(0, temp);
+                   
+                }
+
+            int baseY = 70;
+            for (int i = 0; i < messagesOrder.Count; i++)
+            {
+                Control msgPanel = messagesPanelList[messagesOrder[i]];
+                msgPanel.Location = new Point(19, baseY + i * 238);
+                msgPanel.Name = "messagePanel" + messagesOrder[i];
+                showMessages.Controls.Add(msgPanel);
+            }
+        }
+        private void RemoveMessage(object sender, EventArgs e)
+        {
+            Button removeMessage = sender as Button;
+            int messageNumber = int.Parse(removeMessage.Name.Substring("removeMessage".Length));// שומר את המספר של הכפתור שהמשתמש רצה להשיב להודעה שלו
+           
+          
+            for (int i = 0; i < messagesPanelList.Count; i++)
+            {
+                showMessages.Controls.Remove(showMessages.Controls["messagePanel" + i]); // להוריד את כל ההודעות 
+            }
+            messagesPanelList.Clear();
+            this.user.Messages.RemoveAt(messageNumber);
+           
+
+            if (this.user.Messages.Count > 0)
+            {
+                int baseY = 70;
+                for (int i = 0; i < this.user.Messages.Count; i++)
+                {   // 
+                    // meaaagePanel - הפאנל שמכיל את כל היופי הזה
+                    // 
+                    Panel messagePanel = new Panel();
+                    messagePanel.BackColor = Color.PaleGoldenrod;
+                    messagePanel.Location = new Point(19, baseY + i * 238);
+                    messagePanel.Name = "messagePanel" + i;
+                    messagePanel.Size = new Size(475, 228);
+                    messagePanel.TabIndex = 0;
+                    // 
+                    // replyButton - כפתור שליחת הודעה בחזרה
+                    // 
+                    Button replyButton = new Button();
+                    replyButton.Font = new Font("Arial", 10F, FontStyle.Bold);
+                    replyButton.ForeColor = Color.SaddleBrown;
+                    replyButton.Location = new Point(308, 162);
+                    replyButton.Name = "replyMessage" + i; // שמירת ההודעה
+                    replyButton.Size = new Size(87, 32);
+                    replyButton.TabIndex = 13;
+                    replyButton.Text = "השב";
+                    replyButton.UseVisualStyleBackColor = true;
+                    replyButton.Click += ReplyMessage;
+                    // 
+                    // favorMessages - כפתור לשינוי הודעה מועדפת
+                    // 
+                    Button favorMessages = new Button();
+                    favorMessages.Font = new Font("Arial", 18F, FontStyle.Bold);
+                    favorMessages.ForeColor = Color.SaddleBrown;
+                    favorMessages.Location = new Point(410, 155);
+                    favorMessages.Name = "favorMessages" + i;
+                    favorMessages.Size = new Size(41, 43);
+                    favorMessages.TabIndex = 12;
+                    if (this.user.Messages[i].Favor)
+                        favorMessages.Text = "❤";
+                    else
+                        favorMessages.Text = "♡";
+                    favorMessages.UseVisualStyleBackColor = true;
+                    favorMessages.Click += MakeItFavor;
+                    // 
+                    // favorMessages - כפתור לשינוי הודעה מועדפת
+                    // 
+                    removeMessage = new Button();
+                    removeMessage.Font = new Font("Arial", 14F, FontStyle.Bold);
+                    removeMessage.ForeColor = Color.SaddleBrown;
+                    removeMessage.Location = new Point(250, 155);
+                    removeMessage.Name = "removeMessage" + i;
+                    removeMessage.Size = new Size(41, 43);
+                    removeMessage.TabIndex = 12;
+                    removeMessage.Text = "✖";
+                    removeMessage.Click += RemoveMessage;
+                    // 
+                    // sendingDate - תווית תאריך
+                    // 
+                    Label sendingDate = new Label();
+                    sendingDate.AutoSize = true;
+                    sendingDate.Font = new Font("Arial", 10F, FontStyle.Bold);
+                    sendingDate.ForeColor = Color.SaddleBrown;
+                    sendingDate.Location = new Point(20, 162);
+                    sendingDate.Name = "sendingDate" + i;
+                    sendingDate.Size = new Size(107, 19);
+                    sendingDate.TabIndex = 11;
+                    sendingDate.Text = this.user.Messages[i].SendDate.ToString();
+                    // 
+                    // messageContent - תוכן ההודעה
+                    // 
+                    RichTextBox messageContent = new RichTextBox();
+                    messageContent.ScrollBars = RichTextBoxScrollBars.Both;
+                    messageContent.Location = new Point(20, 46);
+                    messageContent.Name = "messageContent" + i;
+                    messageContent.Size = new Size(431, 103);
+                    messageContent.TabIndex = 13;
+                    messageContent.Font = new Font("Arial", 8F, FontStyle.Bold);
+                    messageContent.ForeColor = yellowPaletteDay["textColor"];
+                    messageContent.RightToLeft = RightToLeft.Yes;
+                    messageContent.Text = this.user.Messages[i].myMessage;
+                    messageContent.ReadOnly = true;
+                    // 
+                    // senderDetails - פרטי השולח
+                    // 
+                    Label senderDetails = new Label();
+                    senderDetails.AutoSize = true;
+                    senderDetails.Font = new Font("Arial", 10F, FontStyle.Bold);
+                    senderDetails.ForeColor = Color.SaddleBrown;
+                    senderDetails.Location = new Point(335, 11);
+                    senderDetails.Name = "senderDetails" + i;
+                    senderDetails.Size = new Size(116, 19);
+                    senderDetails.TabIndex = 10;
+                    senderDetails.RightToLeft = RightToLeft.Yes;
+                    senderDetails.Text = this.user.Messages[i].SenderInfro[1] + " " + this.user.Messages[i].SenderInfro[2] + " " + this.user.Messages[i].SenderInfro[3];
+
+                    //------------- הוספה --------------- 
+                    messagePanel.Controls.Add(replyButton);
+                    messagePanel.Controls.Add(favorMessages);
+                    messagePanel.Controls.Add(sendingDate);
+                    messagePanel.Controls.Add(messageContent);
+                    messagePanel.Controls.Add(senderDetails);
+                    messagePanel.Controls.Add(removeMessage);
+
+                    showMessages.Controls.Add(messagePanel); // כל פאנל שמכיל הודעה מתווסף לפאנל הכללי 
+                    messagesPanelList.Add(messagePanel);// הוספה לרשימה של הפאנלים חשוב !!!!!!!!!
+
+                }
+             
+
+            }
+
+        }
+        private void ReplyMessage(object sender, EventArgs e)
+        {
+            /* אז כשמישהו משיב להודעה אני רוצה שהתוכנית הזאת תעביר אותו לדף של שליחת ההודעה ותכין
+               לו כבר את הנתונים המתאימים בחלון כדי להשיב על ההודעה הזאת ולשלוח למי שהוא קיבל ממנו
+             */
+            Button replyButton = sender as Button;
+            int messageNumber = int.Parse(replyButton.Name.Substring("replyMessage".Length));// שומר את המספר של הכפתור שהמשתמש רצה להשיב להודעה שלו
+
+            string destination = this.user.Messages[messageNumber].SenderInfro[2] + " " + this.user.Messages[messageNumber].SenderInfro[3];
+            destinationName.Text = destination;
+            messageTabControl.SelectedTab = sendMessages; // הולך לחלון של השליחת הודעות        
+        }
+        private void MakeItFavor (object sender, EventArgs e)
+        {
+            Button favorMessages = sender as Button;
+            int messageNumber = int.Parse(favorMessages.Name.Substring("favorMessages".Length));// שומר את המספר של הכפתור שהמשתמש רצה להשיב להודעה שלו
+
+            if (favorMessages.Text == "♡") 
+            { favorMessages.Text = "❤"; this.user.Messages[messageNumber].Favor = true; }
+            else 
+            { favorMessages.Text = "♡"; this.user.Messages[messageNumber].Favor = false; }   
+            
+        }
+        private void TextBoxCheck(object sender, EventArgs e)
+        {
+            if (writingMessage != null && destinationName != null)
+                if (!string.IsNullOrWhiteSpace(writingMessage.Text) && !string.IsNullOrWhiteSpace(destinationName.Text))
+                // אם שדה הסיסמה ושם המשתמש לא ריקים אז אני ארצה שהכפתור יהיה זמין 
+                sendButton.Enabled = true;
+            else
+                sendButton.Enabled = false;
+        }
+        private void SendButn(object sender, EventArgs e)
+        {
+
+            // סטודנט יכול לחפש רק מרצה , סטודנט אחר או סטודנט מתרגל
+            string message = writingMessage.Text; // ההודעה עצמה
+            string desName = destinationName.Text; // שומר את השם והשם משפחה של אותו אדם 
+
+           
+            object saveResults;
+            /* כדי שחבילה תגיע למי ששלח אותה   EdanAD22, Lecturer, עידן, עמדי
+             * אז צריך את הפרטים של השולח 
+             * כלומר אם אני שולחת הודעה לעידן עמדי אז הוא יקבל את הפרטים שלי את היוזר שלי הסוג חשבון וכו וכו כדי שאצלו יופיעו הפרטים שלי
+             * ואז הוא בהמשך יוכל גם ללוח לי הודעה בחזרה 
+             */
+
+
+            string[] otherSideInfro = { this.user.UserName, this.user.AccountType, this.user.Name, this.user.FmName };
+
+            // ------------------------------------------------------------------- מחפש סטודנט בשם זה
+
+            saveResults = searchForStudent(desName.Trim());
+            if (saveResults is List<Student> student) { 
+                if (student[0].AccountType == "Student")
+                {
+                    UserMessage.DeliverMessage(@"..\..\..\..\Files\Students\students.txt", message, otherSideInfro, student[0].UserName);
+
+                }
+                else
+                    if(student[0].AccountType == "StudentTA")
+                    {
+                        UserMessage.DeliverMessage(@"..\..\..\..\Files\Students\students.txt", message, otherSideInfro, student[0].UserName);
+                        
+                    }
+            }
+            // ------------------------------------------------------------------- מחפש מרצה בשם זה
+            else
+            {
+                    saveResults = searchForLecturer(desName.Trim());
+                if (saveResults is List<Lecturer> lecturer)
+                {
+                    UserMessage.DeliverMessage(@"..\..\..\..\Files\Employees\lecturer.txt", message, otherSideInfro, lecturer[0].UserName);
+
+                }
+                else
+                {
+                    userInfro.Text = " לא נמצא מרצה/ קורס/ סטודנט שעונה על השם" + Environment.NewLine
+                        + searshBox.Text
+                        + Environment.NewLine + "עמך הסליחה";
+                }
+
+            }
+
+            writingMessage.Text = "";
+            destinationName.Text = "";
+        }   
+        private void createSearchPage()
+        {
+            searchingPanel = new Panel();
+            searchingPanel.AutoScroll = true;
+            searchingPanel.BackColor = yellowPaletteDay["otherColor"];
+            searchingPanel.Location = new Point(46, 138);
+            searchingPanel.Name = "searchingPanel";
+            searchingPanel.Size = new Size(533, 569);
+            searchingPanel.TabIndex = 4;
+
+            searshBox = new TextBox();
+            searshBox.Location = new Point(102, 55);
+            searshBox.Name = "searshBox";
+            searshBox.Size = new Size(352, 50);
+            searshBox.TabIndex = 0;
+            searshBox.PlaceholderText = "הזן שם סטודנט, מרצה או קורס";
+            searshBox.RightToLeft = RightToLeft.Yes;
+
+            searchingPanel.Controls.Add(searshBox);
+
+            searchIcon = new PictureBox();
+            searchIcon.Location = new Point(60, 50);
+            searchIcon.Name = "searchIcon";
+            searchIcon.Size = new Size(35, 35);
+            searchIcon.TabIndex = 1;
+            searchIcon.TabStop = false;
+            searchIcon.Image = dayIcons["search"];
+            searchIcon.Click += searchPersonByName;
+            searchIcon.SizeMode = PictureBoxSizeMode.StretchImage;
+
+            searchingPanel.Controls.Add(searchIcon);
+
+            userInfro = new RichTextBox();
+            userInfro.ScrollBars = RichTextBoxScrollBars.Vertical;
+            userInfro.Location = new Point(35, 128);
+            userInfro.Name = "userInfro";
+            userInfro.Size = new Size(453, 386);
+            userInfro.TabIndex = 6;
+            userInfro.Font = new Font("Arial", 10F, FontStyle.Bold);
+            userInfro.ForeColor = yellowPaletteDay["textColor"];
+            userInfro.BackColor = yellowPaletteDay["baseColor"];
+            userInfro.RightToLeft = RightToLeft.Yes;
+
+
+            searchingPanel.Controls.Add(userInfro);
+
+
+        }
+        private void searchPersonByName(object? sender, EventArgs e)
+        {
+            if (!string.IsNullOrWhiteSpace(searshBox.Text)) // אם התיבה לא ריקה הוא יבצע את החיפוש 
+            {
+                // ------------------------------------------------------------------- מחפש קורס בשם זה
+                object saveResults = searchForCourse(searshBox.Text.Trim());
+                if (saveResults is List<Course> course)
+                {
+                    for (int k = 0; k < course.Count; k++)
+                    {
+                        userInfro.Text += " שם הקורס" + course[k].Name + Environment.NewLine +
+                                         " פרטי המרצה" + Environment.NewLine +
+                                         " שם" + course[k].Teacher.Name + " " + course[k].Teacher.FmName + Environment.NewLine +
+                                         " אימייל" + course[k].Teacher.Gmail + Environment.NewLine + Environment.NewLine +
+                                         " להלן הסטודנטים המשתתפים איתך בקורס" + Environment.NewLine;
+                        for (int i = 0; i < course[k].Students.Count; i++)
+                            userInfro.Text += course[k].Students[i].Name + " " + course[k].Students[i].FmName + Environment.NewLine;
+                        userInfro.Text += Environment.NewLine + "------------------------------------------------------------" + Environment.NewLine;
+                    }
+                }
+                else
+                {
+                    // ------------------------------------------------------------------- מחפש סטודנט בשם זה
+                    saveResults = searchForStudent(searshBox.Text.Trim());
+                    if (saveResults is List<Student> student)
+                    {
+                        for (int k = 0; k < student.Count; k++)
+                        {
+                            userInfro.Text += " שם" + student[k].Name + " " + student[k].FmName + Environment.NewLine +
+                             " אימייל" + student[k].Gmail + Environment.NewLine + " מספר טלפון " + student[k].PhoneNum;
+
+                            userInfro.Text += Environment.NewLine + "------------------------------------------------------------" + Environment.NewLine;
+                        }
+
+                    }
+
+                    // ------------------------------------------------------------------- מחפש מרצה בשם זה
+                    else
+                    {
+                        saveResults = searchForLecturer(searshBox.Text.Trim());
+                        if (saveResults is List<Lecturer> lecturer)
+                        {
+                            for (int k = 0; k < lecturer.Count; k++)
+                            {
+                                userInfro.Text += " :שם" + lecturer[k].Name + " " + lecturer[k].FmName + Environment.NewLine +
+                                " מרצה עבור הקורסים הבאים";
+
+                                for (int i = 0; i < lecturer[k].Courses.Count; i++)
+                                    userInfro.Text += lecturer[k].Courses[i] + " , ";
+
+                                userInfro.Text += " אימייל" + lecturer[k].Gmail + Environment.NewLine + " מספר טלפון " + lecturer[k].PhoneNum + Environment.NewLine +
+                                  " סוג התמחות" + lecturer[k].SpecializationName +
+                                  " דירוג סטודנטים";
+
+                                for (int i = 0, j = lecturer[k].Rating - 1; i < 5; i++)
+                                    if (i <= j) userInfro.Text += "★";
+                                    else userInfro.Text += "☆";
+
+                                userInfro.Text += Environment.NewLine + "------------------------------------------------------------" + Environment.NewLine;
+                            }
+                        }
+                        else
+                        {
+                            userInfro.Text = " לא נמצא מרצה/ קורס/ סטודנט שעונה על השם" + Environment.NewLine
+                                + searshBox.Text
+                                + Environment.NewLine + "עמך הסליחה";
+                        }
+
+                    }
+
+
+                }
+            }
+            else
+            {
+                userInfro.Text = "";
+                searshBox.Text = "";
+            }
+        }
+        //------------------------------------------------- searchPersonByName פעולות עזר עבור הפונקציה
+        private object searchForCourse(string name)
+        {
+            List<Course> allResults = new List<Course>();
+            for (int i = 0; i < this.user.CoreCourse.Courses.Count; i++)
+                if (this.user.CoreCourse.Courses[i].Name == name)
+                {
+                    allResults.Add(this.user.CoreCourse.Courses[i]);
+                    allResults = allResults.Distinct().ToList(); // מסיר כפילויות
+                }
+
+            for (int i = 0; i < this.user.SpecializationCourses.Courses.Count; i++)
+                if (this.user.SpecializationCourses.Courses[i].Name == name)
+                {
+                    allResults.Add(this.user.SpecializationCourses.Courses[i]);
+                    allResults = allResults.Distinct().ToList();
+                }
+
+            if (allResults.Count > 0)
+                return allResults;
+            return null;
+        }
+
+        private object searchForStudent(string name)
+        {
+            // חיפוש סטודנט מין הסתם מחפש גם סטודנט מתרגל 
+            List<Student> allResults = new List<Student>();
+            string teacherName;
+            for (int i = 0; i < this.user.CoreCourse.Students.Count; i++)
+                if (this.user.CoreCourse.Students[i].Name + " " + this.user.CoreCourse.Students[i].FmName == name)
+                {
+                    allResults.Add(this.user.CoreCourse.Students[i]);
+                    allResults = allResults.Distinct().ToList();
+                }
+
+            for (int i = 0; i < this.user.SpecializationCourses.Students.Count; i++)
+            {
+                if (this.user.SpecializationCourses.Students[i].Name + " " + this.user.SpecializationCourses.Students[i].FmName == name)
+                {
+                    allResults.Add(this.user.SpecializationCourses.Students[i]);
+                    allResults = allResults.Distinct().ToList();
+                }
+
+            }
+            if (allResults.Count == 0)
+                return null;
+
+            //מסיר כפילויות
+            string currentId;
+            for (int i = 0; i < allResults.Count; i++)
+            {
+                currentId = allResults[i].Id;
+                for (int j = i + 1; j < allResults.Count; j++)
+                {
+                    if (allResults[j].Id == currentId)
+                    {
+                        allResults.RemoveAt(j);
+                        // ואז בזמן אמת כל האיברים זזים אינדקס אחד שמאלה אז צריך שהמצביע של הלולאה לא ישתנה הפעם
+                        j--;
+                    }
+                }
+            }
+            return allResults;
+        }
+
+        private object searchForLecturer(string name)
+        {
+            List<Lecturer> allResults = new List<Lecturer>();
+            string teacherName;
+            for (int i = 0; i < this.user.CoreCourse.Courses.Count; i++)
+            {
+                teacherName = this.user.CoreCourse.Courses[i].Teacher.Name + " " + this.user.CoreCourse.Courses[i].Teacher.FmName;
+                if (teacherName == name)
+                {
+                    allResults.Add(this.user.CoreCourse.Courses[i].Teacher);
+                    allResults = allResults.Distinct().ToList();
+                }
+            }
+
+            for (int i = 0; i < this.user.SpecializationCourses.Courses.Count; i++)
+            {
+                if (this.user.SpecializationCourses.Courses[i].Teacher != null)
+                {
+                    teacherName = this.user.SpecializationCourses.Courses[i].Teacher.Name + " " + this.user.SpecializationCourses.Courses[i].Teacher.FmName;
+                    if (teacherName == name)
+                    {
+                        allResults.Add(this.user.SpecializationCourses.Courses[i].Teacher);
+                        allResults = allResults.Distinct().ToList();
+
+                    }
+                }
+            }
+            if (allResults.Count == 0)
+                return null;
+
+            //מסיר כפילויות
+            string currentId;
+            for (int i = 0; i < allResults.Count; i++)
+            {
+                currentId = allResults[i].Id;
+                for (int j = i + 1; j < allResults.Count; j++)
+                {
+                    if (allResults[j].Id == currentId)
+                    {
+                        allResults.RemoveAt(j);
+                        // ואז בזמן אמת כל האיברים זזים אינדקס אחד שמאלה אז צריך שהמצביע של הלולאה לא ישתנה הפעם
+                        j--;
+                    }
+                }
+            }
+            return allResults;
+        }
+
+        // ------------------------------------------------------ הצגת עמודים 
+        private void prsonalInfro_Click(object sender, EventArgs e)
+        {
+            removeAll();
+            title.Text = "מידע אישי";
+            Controls.Add(infroPanel);
+            ChangeMood(null, EventArgs.Empty);
+        }
+
+        private void message_Click(object sender, EventArgs e)
+        {
+            removeAll();
+            title.Text = "הודעות";
+            Controls.Add(messageTabControl);
+            ChangeMood(null, EventArgs.Empty);
+        }
+
+        private void search_Click(object sender, EventArgs e)
+        {
+            removeAll();
+            title.Text = "חיפוש";
+            Controls.Add(searchingPanel);
+            ChangeMood(null, EventArgs.Empty);
+        }
+
+        private void courses_Click(object sender, EventArgs e)
+        {
+            removeAll();
+            title.Text = "כל הקורסים";
+            Controls.Add(coursesPanel);
+            ChangeMood(null, EventArgs.Empty);
+        }
+
+        private void settings_Click(object sender, EventArgs e)
+        {
+            removeAll();
+            title.Text = "הגדרות";
+            Controls.Add(settingsPanel);
+            ChangeMood(null, EventArgs.Empty);
+        }
+
+        // -------------------------------------------------------------------
+        private void ChangeMood(object sender, EventArgs e)
+        {
+           
+            if (this.isDay)
+            {
+                //                                 day mood 
+
+                // ---------------------------------------------------------------------------- backGroundColor
+              
+                this.BackColor = yellowPaletteDay["backGroundColor"];
+                specializationLable.BackColor = yellowPaletteDay["backGroundColor"];
+                coreProgramLable.BackColor = yellowPaletteDay["backGroundColor"];
+                //List<string> mainFormTools = new List<string>
+                //{"mainForm" };
+                //UpdateControlsColors(mainFormTools, yellowPaletteDay["backGroundColor"], true, false);
+                //// ---------------------------------------------------------------------------- baseColor
+                List<string> baseColorTools = new List<string>
+                {"menuPanel","topPanel","userInfro","writingMessage" };
+                for (int i = 0; i < messagesPanelList.Count; i++)
+                    baseColorTools.Add("messagePanel" + i);
+
+                UpdateControlsColors(baseColorTools, yellowPaletteDay["titleColor"], false, true);
+                UpdateControlsColors(baseColorTools, yellowPaletteDay["baseColor"], true, false);
+                // ---------------------------------------------------------------------------- buttonColor
+                List<string> buttonColorTools = new List<string>
+                {"prsonalInfro","settings","message","search","logOut","courses", "specializationLable", "coreProgramLable"
+                ,"dateSearch","importanceSearch","favoriteSearch","sendButton"};
+                
+                UpdateControlsColors(buttonColorTools, yellowPaletteDay["titleColor"], false, true );
+                buttonColorTools.Remove("specializationLable");
+                buttonColorTools.Remove("coreProgramLable");
+                UpdateControlsColors(buttonColorTools, yellowPaletteDay["buttonColor"], true, false);
+                // ---------------------------------------------------------------------------- otherColor
+                List<string> otherColorTools = new List<string>
+                {"coursesPanel","infroPanel","settingsPanel" ,"searchingPanel","showMessages","sendMessages" };
+
+                UpdateControlsColors(otherColorTools, yellowPaletteDay["otherColor"], true, false);
+               
+                // ---------------------------------------------------------------------------- titleColor
+                List<string> titleColorTools = new List<string>
+                {"helloLable","title","dayLable","nightLable","searchLable",
+                "prsonalInfro","settings","message","search","logOut","courses"};
+
+                for (int i = 0; i < messagesPanelList.Count; i++)
+                {
+                    titleColorTools.Add("senderDetails"+i);
+                    titleColorTools.Add("sendingDate"+i);
+                }
+
+                UpdateControlsColors(titleColorTools, yellowPaletteDay["titleColor"], false, true);
+                // ---------------------------------------------------------------------------- textColor
+                List<string> textColorTools = new List<string>
+                {"userInfro"};
+                for (int i = 0; i < this.user.CoreCourse.Courses.Count; i++)
+                    textColorTools.Add("course" + i);
+                for (int i = 0; i < this.user.SpecializationCourses.Courses.Count; i++)
+                    textColorTools.Add("course" + i);
+
+                UpdateControlsColors(textColorTools, yellowPaletteDay["baseColor"], true, false);
+                UpdateControlsColors(textColorTools, yellowPaletteDay["textColor"], false, true);
+                // ---------------------------------------------------------------------------- icons             
+                menuIcon.Image = this.dayIcons["menu"];
+                prsonalInfro.Image = this.dayIcons["infro"];
+                message.Image = this.dayIcons["message"];
+                search.Image = this.dayIcons["search"];
+                settings.Image = this.dayIcons["settings"];
+                logOut.Image = this.dayIcons["logOut"];
+                courses.Image = this.dayIcons["logOut"];
+                switchIcon.Image = this.dayIcons["on"];
+                // ---------------------------------------------------------------------------- backToWhite             
+                List<string> backToWhite = new List<string>
+                { "dateSearch", "importanceSearch", "favoriteSearch", "sendButton" };
+                for (int i = 0; i < messagesPanelList.Count; i++)
+                {
+                    backToWhite.Add("removeMessage" + i);
+                    backToWhite.Add("favorMessages" + i);
+                    backToWhite.Add("replyMessage" + i);
+                    backToWhite.Add("messageContent"+i );
+                  
+                }
+
+                UpdateControlsColors(backToWhite, yellowPaletteDay["titleColor"], false, true);
+                UpdateControlsColors(backToWhite, Color.White, true, false);
+               
+            }
+            else
+            {
+                //                                 night mood
+
+
+                // ---------------------------------------------------------------------------- backGroundColor
+                this.BackColor = yellowPaletteNight["backGroundColor"];                //List<string> mainFormTools = new List<string>
+                //// ---------------------------------------------------------------------------- baseColor
+                List<string> baseColorTools = new List<string>
+                {"menuPanel","topPanel","userInfro","writingMessage" };
+
+                //for (int i = 0; i < this.user.CoreCourse.Courses.Count; i++)
+                //    baseColorTools.Add("card" + i);
+                //for (int i = 0; i < this.user.SpecializationCourses.Courses.Count; i++)
+                //    baseColorTools.Add("card" + i);
+
+                UpdateControlsColors(baseColorTools, yellowPaletteNight["baseColor"], true, false);
+                // ---------------------------------------------------------------------------- buttonColor
+                List<string> buttonColorTools = new List<string>
+                {"prsonalInfro","settings","message","search","logOut","courses" ,"coreProgramLable", "specializationLable"
+                ,"dateSearch","importanceSearch","favoriteSearch","sendButton"};
+
+                for (int i = 0; i < messagesPanelList.Count; i++)
+                {
+                    buttonColorTools.Add("removeMessage" + i);
+                    buttonColorTools.Add("favorMessages" + i);
+                    buttonColorTools.Add("replyMessage" + i);
+                    buttonColorTools.Add("messagePanel" + i);
+                }
+
+                UpdateControlsColors(buttonColorTools, yellowPaletteNight["buttonColor"], true, false);
+                UpdateControlsColors(buttonColorTools, yellowPaletteNight["titleColor"], false, true);
+                // ---------------------------------------------------------------------------- otherColor
+                List<string> otherColorTools = new List<string>
+                {"coursesPanel","infroPanel","settingsPanel" ,"searchingPanel","showMessages","sendMessages"};
+
+                UpdateControlsColors(otherColorTools, yellowPaletteNight["otherColor"], true, false);
+                // ---------------------------------------------------------------------------- titleColor
+                List<string> titleColorTools = new List<string>
+                {"helloLable","title","dayLable","nightLable","coreProgramLable", "specializationLable","searchLable" };
+
+                for (int i = 0; i < messagesPanelList.Count; i++)
+                {
+                    titleColorTools.Add("senderDetails"+i);
+                    titleColorTools.Add("sendingDate"+i); 
+                }
+
+                UpdateControlsColors(titleColorTools, yellowPaletteNight["titleColor"], false, true);
+
+                // ---------------------------------------------------------------------------- textColor
+                List<string> textColorTools = new() { "userInfro"};
+                for (int i = 0; i < this.user.CoreCourse.Courses.Count; i++)
+                    textColorTools.Add("course" + i);
+                for (int i = 0; i < this.user.SpecializationCourses.Courses.Count; i++)
+                    textColorTools.Add("course" + i);
+                for (int i = 0; i < messagesPanelList.Count; i++)
+                    textColorTools.Add("messageContent"+i);
+           
+               
+                UpdateControlsColors(textColorTools, yellowPaletteNight["baseColor"], true, false);
+                UpdateControlsColors(textColorTools, yellowPaletteNight["textColor"], false, true);
+                // ---------------------------------------------------------------------------- icons             
+                menuIcon.Image = this.nightIcons["menu"];
+                prsonalInfro.Image = this.nightIcons["infro"];
+                message.Image = this.nightIcons["message"];
+                search.Image = this.nightIcons["search"];
+                settings.Image = this.nightIcons["settings"];
+                logOut.Image = this.nightIcons["logOut"];
+                courses.Image = this.nightIcons["logOut"];
+                switchIcon.Image = this.nightIcons["off"];
+
+
+            }
+
+        }
+
+        private void ChangeFlag(object sender, EventArgs e)
+        {
+            if (this.isDay) this.isDay = false;
+            else this.isDay = true;
+        }
+        private void UpdateControlsColors(List<string> controlNames, Color color, bool changeBackColor, bool changeForeColor)
+        {
+            void UpdateControlRecursive(Control parent)
+            {
+                foreach (Control control in parent.Controls)
+                {
+                   // MessageBox.Show(control.Name + " == " + string.Join(", ", controlNames));
+                    if (controlNames.Contains(control.Name))
+                    {
+                        if (changeBackColor)
+                            control.BackColor = color;
+
+                        if (changeForeColor)
+                            control.ForeColor = color;
+                    }
+
+
+                    if (control.HasChildren)
+                        UpdateControlRecursive(control);
+                }
+            }
+
+            UpdateControlRecursive(this);
+        }
+
+
+        public void removeAll()
+        {
+            // הפאנלים שיש:     מידע אישי, הודעות , חיפוש , הגדרות , כל הקורסים 
+            Controls.Remove(coursesPanel);
+            Controls.Remove(settingsPanel);
+            Controls.Remove(infroPanel);
+            Controls.Remove(searchingPanel);
+            Controls.Remove(messageTabControl);
+        }
+
+        private void logOut_Click(object sender, EventArgs e)
+        {
+            this.user.LastLoginDate = DateTime.Now;// שומר תאריך יציאה
+            HeadOfDepartment.WriteStudentToFile(this.user);
+            StartWindow newStart = new StartWindow();
+            newStart.Show();
+            this.Hide();
+            this.Dispose();
+        }
+        private void CloseAll(object sender, FormClosingEventArgs e)
+        { this.user.LastLoginDate = DateTime.Now;
+            HeadOfDepartment.WriteStudentToFile(this.user);
+            Application.Exit();
+        }
+
+
+
+
+    }
+}
